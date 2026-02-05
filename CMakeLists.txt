@@ -15,10 +15,21 @@ add_executable(calc
     src/main.cpp
 )
 
+set_target_properties(calc PROPERTIES
+    CXX_CLANG_TIDY "clang-tidy"
+)
+
 target_link_libraries(calc PRIVATE operations_lib)
 
 target_compile_features(calc PRIVATE cxx_std_17)
 
 install(TARGETS calc
     RUNTIME DESTINATION bin
+)
+
+add_custom_target(format
+    COMMAND clang-format -i
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMENT "Running clang-format"
 )

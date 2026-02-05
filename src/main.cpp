@@ -5,7 +5,7 @@
 #include <errno.h>
 #include "operations.hpp"
 
-static void printHelp(const char* prog) {
+static void printHelp(const char *prog) {
     printf("Usage:\n");
     printf("  %s -a A [-b B] -o OP\n", prog);
     printf("Options:\n");
@@ -24,8 +24,8 @@ static int parseInt(const char *value, int32_t &out) {
         return 1;
     }
 
-    errno = 0;
-    char* end = nullptr;
+    errno     = 0;
+    char *end = nullptr;
 
     const long tmp = strtol(value, &end, 10);
 
@@ -43,28 +43,23 @@ static int parseInt(const char *value, int32_t &out) {
     return 0;
 }
 
-
-
-
-int main(int argc, char * const argv[]) {
+int main(int argc, char *const argv[]) {
     const char *op = nullptr;
-    int32_t a = 0, b = 0;
-    bool has_a = false, has_b = false;
+    int32_t     a = 0, b = 0;
+    bool        has_a = false, has_b = false;
 
     static struct option long_options[] = {
-        { "help", no_argument, 0, 'h' },
-        { "a", required_argument, 0, 'a' },
-        { "b", required_argument, 0, 'b' },
-        { "op", required_argument, 0, 'o' },
-        { 0, 0, 0, 0 }
+        {"help",       no_argument, 0, 'h'},
+        {   "a", required_argument, 0, 'a'},
+        {   "b", required_argument, 0, 'b'},
+        {  "op", required_argument, 0, 'o'},
+        {     0,                 0, 0,   0}
     };
 
     int c;
     while ((c = getopt_long(argc, argv, "ha:b:o:", long_options, nullptr)) != -1) {
         switch (c) {
-            case 'h':
-                printHelp(argv[0]);
-                return 0; 
+            case 'h': printHelp(argv[0]); return 0;
             case 'a':
                 if (parseInt(optarg, a) != 0) return 1;
                 has_a = true;
@@ -73,12 +68,9 @@ int main(int argc, char * const argv[]) {
                 if (parseInt(optarg, b) != 0) return 1;
                 has_b = true;
                 break;
-            case 'o':
-                op = optarg;
-                break;
+            case 'o': op = optarg; break;
             case '?':
-            default:
-                return 1;
+            default: return 1;
         }
     }
 
@@ -92,7 +84,7 @@ int main(int argc, char * const argv[]) {
         return 1;
     }
 
-    int is_fact = ((strcmp(op, "fact") && strcmp(op, "!"))  == 0);
+    int is_fact = ((strcmp(op, "fact") && strcmp(op, "!")) == 0);
     if (!is_fact && !has_b) {
         fprintf(stderr, "Operation '%s' requires -b\n", op);
         return 1;
@@ -100,29 +92,21 @@ int main(int argc, char * const argv[]) {
 
     int32_t result = 0;
 
-    if ((strcmp(op, "add") && strcmp(op, "+")) == 0) {
-        result = add(a, b);
-    }
-    else if ((strcmp(op, "sub") && strcmp(op, "-")) == 0) {
-        result = sub(a, b);
-    }
-    else if ((strcmp(op, "mul") && strcmp(op, "*")) == 0) {
-        result = mul(a, b);
-    }
-    else if ((strcmp(op, "del") && strcmp(op, "/")) == 0) {
-        result = del(a, b);
-    }
-    else if ((strcmp(op, "pow") && strcmp(op, "^")) == 0) {
-        result = pow(a, b);
-    }
-    else if ((strcmp(op, "fact") && strcmp(op, "!")) == 0) {
-        result = fact(a);
-    }
+    if ((strcmp(op, "add") && strcmp(op, "+")) == 0) { result = add(a, b); }
+    else if ((strcmp(op, "sub") && strcmp(op, "-")) == 0) { result = sub(a, b); }
+    else if ((strcmp(op, "mul") && strcmp(op, "*")) == 0) { result = mul(a, b); }
+    else if ((strcmp(op, "del") && strcmp(op, "/")) == 0) { result = del(a, b); }
+    else if ((strcmp(op, "pow") && strcmp(op, "^")) == 0) { result = pow(a, b); }
+    else if ((strcmp(op, "fact") && strcmp(op, "!")) == 0) { result = fact(a); }
     else {
-         fprintf(stderr, "Operation '%s' don't support\n", op);
-         return 0;
+        fprintf(stderr, "Operation '%s' don't support\n", op);
+        return 0;
     }
     
+    if (is_fact) {
+        printf("Result of operation: fact(%i) = %i\n", a, result);
+        return 0;
+    }
     printf("Result of operation: %i %s %i = %i\n", a, op, b, result);
 
     return 0;
