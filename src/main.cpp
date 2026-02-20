@@ -1,5 +1,12 @@
-#include "../include/calc_core.hpp"
+#include "../include/runner.hpp"
+#include "iostream"
 
 int main(int argc, char *const argv[]) {
-    return calc_core::run(argc, argv);
+    if (argc != 2) {
+        std::cerr << "Usage: ./calc input.json\n";
+        return 1;
+    }
+
+    Runner runner;
+    return runner.run(argv[1]);
 }
