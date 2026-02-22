@@ -1,9 +1,10 @@
 #include "../include/checker.hpp"
-
+#include "../include/logger.hpp"
 #include "../include/errors.hpp"
 
 void Checker::check(const Request &request) {
-    if (request.op != OperationType::Fact && request.has_second) throw Error("Cannot calculate because 'second' parameter is missed for binary operation");
+    Logger::instance().debug("Starting Checker");
+    if (request.op != OperationType::Fact && !request.has_second) throw Error("Cannot calculate because 'second' parameter is missed for binary operation");
         
     switch (request.op) {
         case OperationType::Div:
@@ -17,4 +18,5 @@ void Checker::check(const Request &request) {
             break;
         default: break;
     }
+    Logger::instance().debug("Checker successfully completed");
 }

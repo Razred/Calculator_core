@@ -8,5 +8,5 @@ int main(int argc, char *const argv[]) {
     }
 
     Runner runner;
-    return runner.run(argv[1]);
+    return runner.run(argv[1], std::cout, std::cerr);
 }

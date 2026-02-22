@@ -1,7 +1,9 @@
 #include "../include/calculator.hpp"
 #include "../include/errors.hpp"
+#include "../include/logger.hpp"
 
 Response Calculator::calculate(const Request &request) {
+    Logger::instance().debug("Performing operation: {}", static_cast<int>(request.op));
     switch (request.op) {
         case OperationType::Add: return add(request.first, request.second); 
         case OperationType::Sub: return sub(request.first, request.second); 

@@ -8,7 +8,7 @@
 
 class Runner {
 public:
-    int run(const std::string &json_path);
+    int run(const std::string &json_path, std::ostream &out, std::ostream &err);
 
 private:
     Parser parser;
