@@ -1,6 +1,6 @@
 #pragma once
-
 #include "model.hpp"
+
 #include <ostream>
 
 class Printer {

@@ -1,5 +1,4 @@
 #pragma once
-
 #include <stdexcept>
 
 class Error : public std::runtime_error {

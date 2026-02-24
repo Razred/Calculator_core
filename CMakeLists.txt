@@ -5,6 +5,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(FetchContent)
 
+FetchContent_Declare(operations_lib
+    GIT_REPOSITORY https://github.com/Razred/Operations_Library.git
+    GIT_TAG v1.0.1
+)
+
 FetchContent_Declare(
   nlohmann_json
   GIT_REPOSITORY https://github.com/nlohmann/json.git
@@ -31,12 +36,14 @@ add_library(calc_lib
     src/checker.cpp
     src/calculator.cpp
     src/printer.cpp
+    src/logger.cpp
 )
 
 target_include_directories(calc_lib PUBLIC include)
 
 target_link_libraries(calc_lib
     PUBLIC 
+    operations_lib
     nlohmann_json::nlohmann_json 
     spdlog::spdlog
 )
@@ -84,6 +91,7 @@ add_custom_target(calc_format
         ${CMAKE_CURRENT_SOURCE_DIR}/src/checker.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/calculator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/printer.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/logger.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}tests/runner_tests.cpp
     COMMENT "Running clang-format"
 )

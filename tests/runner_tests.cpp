@@ -1,8 +1,9 @@
+#include "runner.hpp"
+
 #include <gtest/gtest.h>
 #include <sstream>
 #include <fstream>
-
-#include "runner.hpp"
+#include <array>
 
 TEST(RunnerTest, AddCheck) {
     const std::string filename = "test_add.json";
@@ -14,16 +15,17 @@ TEST(RunnerTest, AddCheck) {
     })";
     file.close();
 
+    std::array<const char*, 2> argv = {"./calc", filename.c_str()};
+    int argc = static_cast<int>(argv.size());   
+
     Runner runner;
 
     std::ostringstream out;
-    std::ostringstream err;
 
-    int code = runner.run(filename, out, err);
+    int code = runner.run(argc, argv.data(), out);
 
     EXPECT_EQ(code, 0);
     EXPECT_EQ(out.str(), "2 + 3 = 5\n");
-    EXPECT_TRUE(err.str().empty());
 }
 
 TEST(RunnerTest, SubCheck) {
@@ -36,14 +38,17 @@ TEST(RunnerTest, SubCheck) {
     })";
     file.close();
 
-    Runner             runner;
-    std::ostringstream out, err;
+    std::array<const char*, 2> argv = {"./calc", filename.c_str()};
+    int argc = static_cast<int>(argv.size());   
 
-    int code = runner.run(filename, out, err);
+    Runner runner;
+
+    std::ostringstream out;
+
+    int code = runner.run(argc, argv.data(), out);
 
     EXPECT_EQ(code, 0);
     EXPECT_EQ(out.str(), "3 - 2 = 1\n");
-    EXPECT_TRUE(err.str().empty());
 }
 
 TEST(RunnerTest, MulCheck) {
@@ -56,14 +61,17 @@ TEST(RunnerTest, MulCheck) {
     })";
     file.close();
 
-    Runner             runner;
-    std::ostringstream out, err;
+    std::array<const char*, 2> argv = {"./calc", filename.c_str()};
+    int argc = static_cast<int>(argv.size());   
 
-    int code = runner.run(filename, out, err);
+    Runner runner;
+
+    std::ostringstream out;
+
+    int code = runner.run(argc, argv.data(), out);
 
     EXPECT_EQ(code, 0);
     EXPECT_EQ(out.str(), "4 * 5 = 20\n");
-    EXPECT_TRUE(err.str().empty());
 }
 
 TEST(RunnerTest, DivCheck) {
@@ -76,14 +84,17 @@ TEST(RunnerTest, DivCheck) {
     })";
     file.close();
 
-    Runner             runner;
-    std::ostringstream out, err;
+    std::array<const char*, 2> argv = {"./calc", filename.c_str()};
+    int argc = static_cast<int>(argv.size());   
 
-    int code = runner.run(filename, out, err);
+    Runner runner;
+
+    std::ostringstream out;
+
+    int code = runner.run(argc, argv.data(), out);
 
     EXPECT_EQ(code, 0);
     EXPECT_EQ(out.str(), "20 / 4 = 5\n");
-    EXPECT_TRUE(err.str().empty());
 }
 
 TEST(RunnerTest, PowCheck) {
@@ -96,14 +107,17 @@ TEST(RunnerTest, PowCheck) {
     })";
     file.close();
 
-    Runner             runner;
-    std::ostringstream out, err;
+    std::array<const char*, 2> argv = {"./calc", filename.c_str()};
+    int argc = static_cast<int>(argv.size());   
 
-    int code = runner.run(filename, out, err);
+    Runner runner;
+
+    std::ostringstream out;
+
+    int code = runner.run(argc, argv.data(), out);
 
     EXPECT_EQ(code, 0);
     EXPECT_EQ(out.str(), "2 ^ 3 = 8\n");
-    EXPECT_TRUE(err.str().empty());
 }
 
 
@@ -116,21 +130,22 @@ TEST(RunnerTest, FactorialCheck) {
     })";
     file.close();
 
+    std::array<const char*, 2> argv = {"./calc", filename.c_str()};
+    int argc = static_cast<int>(argv.size());   
+
     Runner runner;
 
     std::ostringstream out;
-    std::ostringstream err;
 
-    int code = runner.run(filename, out, err);
+    int code = runner.run(argc, argv.data(), out);
 
     EXPECT_EQ(code, 0);
     EXPECT_EQ(out.str(), "5! = 120\n");
-    EXPECT_TRUE(err.str().empty());
 }
 
 TEST(RunnerTest, DivisionByZero) {
     const std::string filename = "test_div0.json";
-    std::ofstream     file(filename);
+    std::ofstream file(filename);
     file << R"({
         "first": 4,
         "second": 0,
@@ -138,16 +153,19 @@ TEST(RunnerTest, DivisionByZero) {
     })";
     file.close();
 
+    std::array<const char*, 2> argv = {"./calc", filename.c_str()};
+    int argc = static_cast<int>(argv.size());
+
     Runner runner;
-
     std::ostringstream out;
-    std::ostringstream err;
 
-    int code = runner.run(filename, out, err);
-
-    EXPECT_NE(code, 0);
-    EXPECT_TRUE(out.str().empty());
-    EXPECT_FALSE(err.str().empty());
+    try {
+        runner.run(argc, argv.data(), out);
+        FAIL() << "Expected DivisionByZero exception";
+    }
+    catch (const Error& e) {
+        EXPECT_EQ(std::string(e.what()), "Division by zero");
+    }
 }
 
 TEST(RunnerTest, CheckNegativePow) {
@@ -160,14 +178,20 @@ TEST(RunnerTest, CheckNegativePow) {
     })";
     file.close();
 
-    Runner             runner;
-    std::ostringstream out, err;
+    std::array<const char*, 2> argv = {"./calc", filename.c_str()};
+    int argc = static_cast<int>(argv.size());   
 
-    int code = runner.run(filename, out, err);
+    Runner runner;
 
-    EXPECT_NE(code, 0);
-    EXPECT_TRUE(out.str().empty());
-    EXPECT_FALSE(err.str().empty());
+    std::ostringstream out;
+
+    try {
+        runner.run(argc, argv.data(), out);
+        FAIL() << "Expected Negative Pow exception";
+    }
+    catch (const Error& e) {
+        EXPECT_EQ(std::string(e.what()), "Cannot pow by negative exponent");
+    }
 }
 
 TEST(RunnerTest, CheckNegativeFactorial) {
@@ -179,14 +203,20 @@ TEST(RunnerTest, CheckNegativeFactorial) {
     })";
     file.close();
 
-    Runner             runner;
-    std::ostringstream out, err;
+    std::array<const char*, 2> argv = {"./calc", filename.c_str()};
+    int argc = static_cast<int>(argv.size());   
 
-    int code = runner.run(filename, out, err);
+    Runner runner;
 
-    EXPECT_NE(code, 0);
-    EXPECT_TRUE(out.str().empty());
-    EXPECT_FALSE(err.str().empty());
+    std::ostringstream out;
+
+    try {
+        runner.run(argc, argv.data(), out);
+        FAIL() << "Expected Negative factorial exception";
+    }
+    catch (const Error& e) {
+        EXPECT_EQ(std::string(e.what()), "Value 'first' must be >= 0 for factorial");
+    }
 }
 
 TEST(RunnerTest, MissingSecondParameter) {
@@ -198,14 +228,20 @@ TEST(RunnerTest, MissingSecondParameter) {
     })";
     file.close();
 
-    Runner             runner;
-    std::ostringstream out, err;
+    std::array<const char*, 2> argv = {"./calc", filename.c_str()};
+    int argc = static_cast<int>(argv.size());   
 
-    int code = runner.run(filename, out, err);
+    Runner runner;
 
-    EXPECT_NE(code, 0);
-    EXPECT_TRUE(out.str().empty());
-    EXPECT_FALSE(err.str().empty());
+    std::ostringstream out;
+
+    try {
+        runner.run(argc, argv.data(), out);
+        FAIL() << "Expected Missing second parameter exception";
+    }
+    catch (const Error& e) {
+        EXPECT_EQ(std::string(e.what()), "Cannot calculate because 'second' parameter is missed for binary operation");
+    }
 }
 
 TEST(RunnerTest, InvalidOperation) {
@@ -218,12 +254,18 @@ TEST(RunnerTest, InvalidOperation) {
     })";
     file.close();
 
-    Runner             runner;
-    std::ostringstream out, err;
+    std::array<const char*, 2> argv = {"./calc", filename.c_str()};
+    int argc = static_cast<int>(argv.size());   
 
-    int code = runner.run(filename, out, err);
+    Runner runner;
 
-    EXPECT_NE(code, 0);
-    EXPECT_TRUE(out.str().empty());
-    EXPECT_FALSE(err.str().empty());
+    std::ostringstream out;
+
+    try {
+        runner.run(argc, argv.data(), out);
+        FAIL() << "Expected Invalid operation exception";
+    }
+    catch (const Error& e) {
+        EXPECT_EQ(std::string(e.what()), "Not expected value unknown for key 'op'");
+    }
 }

@@ -1,5 +1,4 @@
 #pragma once
-
 #include "model.hpp"
 #include "errors.hpp"
 

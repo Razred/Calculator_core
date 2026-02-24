@@ -1,14 +1,14 @@
-#include <string>
-
+#pragma once
 #include "parser.hpp"
 #include "checker.hpp"
 #include "calculator.hpp"
 #include "printer.hpp"
 
+#include <iostream>
 
 class Runner {
 public:
-    int run(const std::string &json_path, std::ostream &out, std::ostream &err);
+    int run(int argc, const char* argv[], std::ostream &out = std::cout);
 
 private:
     Parser parser;

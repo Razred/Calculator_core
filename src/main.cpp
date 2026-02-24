@@ -1,12 +1,12 @@
 #include "../include/runner.hpp"
-#include "iostream"
 
-int main(int argc, char *const argv[]) {
-    if (argc != 2) {
-        std::cerr << "Usage: ./calc input.json\n";
+int main(int argc, const char* argv[]) {
+    try {
+        Runner runner;
+        return runner.run(argc, argv);
+    }
+    catch (const std::exception &e) {
+        std::cerr << e.what() << std::endl;
         return 1;
     }
-
-    Runner runner;
-    return runner.run(argv[1], std::cout, std::cerr);
 }
