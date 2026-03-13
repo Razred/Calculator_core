@@ -14,6 +14,5 @@ struct Request {
 
 struct Response {
     int64_t  result_i64{};
-    uint64_t result_u64{};
-    bool     result_is_u64{false};
+    int      status{0};
 };

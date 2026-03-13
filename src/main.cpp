@@ -1,4 +1,5 @@
 #include "../include/runner.hpp"
+#include "../include/connection.hpp"
 
 int main(int argc, const char* argv[]) {
     try {

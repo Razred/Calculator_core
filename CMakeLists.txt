@@ -7,7 +7,7 @@ include(FetchContent)
 
 FetchContent_Declare(operations_lib
     GIT_REPOSITORY https://github.com/Razred/Operations_Library.git
-    GIT_TAG v1.0.1
+    GIT_TAG v1.1.2
 )
 
 FetchContent_Declare(
@@ -28,7 +28,7 @@ FetchContent_Declare(
   GIT_TAG v1.17.0
 )
 
-FetchContent_MakeAvailable(nlohmann_json googletest spdlog)
+FetchContent_MakeAvailable(operations_lib nlohmann_json googletest spdlog)
 
 add_library(calc_lib
     src/runner.cpp
@@ -37,6 +37,7 @@ add_library(calc_lib
     src/calculator.cpp
     src/printer.cpp
     src/logger.cpp
+    src/postgres_db.cpp
 )
 
 target_include_directories(calc_lib PUBLIC include)
@@ -51,6 +52,20 @@ target_link_libraries(calc_lib
 add_executable(calc src/main.cpp)
 
 target_link_libraries(calc PRIVATE calc_lib)
+
+find_package(PostgreSQL REQUIRED)
+
+target_link_libraries(calc_lib
+    PRIVATE
+    PostgreSQL::PostgreSQL
+)
+
+include(CTest)
+find_program(VALGRIND valgrind)
+if(VALGRIND)
+    set(MEMORYCHECK_COMMAND ${VALGRIND})
+    set(MEMORYCHECK_COMMAND_OPTIONS "--leak-check=full --show-leak-kinds=all --error-exitcode=1")
+endif()
 
 enable_testing()
 
