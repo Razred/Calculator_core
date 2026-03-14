@@ -3,7 +3,7 @@
 
 void Printer::print(const Request &request, const Response &response, std::ostream &out) {
     if (!request.has_second) { 
-        out << request.first << request.op_str << " = " << response.result_u64 << std::endl;
+        out << request.first << request.op_str << " = " << response.result_i64 << std::endl;
         return;
     }
 

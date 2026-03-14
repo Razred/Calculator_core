@@ -38,38 +38,43 @@ Response Calculator::calculate(const Request& request) {
             int64_t result = 0;
             if (!operations::add(request.first, request.second, result, status)) throwByStatus(status);
             response.result_i64 = result;
+            response.status = static_cast<int>(status);
             return response;
         }
         case OperationType::Sub: {
             int64_t result = 0;
             if (!operations::sub(request.first, request.second, result, status)) throwByStatus(status);
             response.result_i64 = result;
+            response.status = static_cast<int>(status);
             return response;
         }
         case OperationType::Mul: {
             int64_t result = 0;
             if (!operations::mul(request.first, request.second, result, status)) throwByStatus(status);
             response.result_i64 = result;
+            response.status = static_cast<int>(status);
             return response;
         }
         case OperationType::Div: {
             int64_t result = 0;
             if (!operations::div(request.first, request.second, result, status)) throwByStatus(status);
             response.result_i64 = result;
+            response.status = static_cast<int>(status);
             return response;
         }
         case OperationType::Pow: {
             int64_t result = 0;
             if (!operations::pow(request.first, request.second, result, status)) throwByStatus(status);
             response.result_i64 = result;
+            response.status = static_cast<int>(status);
             return response;
         }
         case OperationType::Fact: {
-            uint64_t result = 0;
+            int64_t result = 0;
             if (request.first < 0) throw Error("Value 'first' must be >= 0 for factorial");
-            if (!operations::fact(static_cast<uint64_t>(request.first), result, status)) throwByStatus(status);
-            response.result_is_u64 = true;
-            response.result_u64 = result;
+            if (!operations::fact(request.first, result, status)) throwByStatus(status);
+            response.result_i64 = result;
+            response.status = static_cast<int>(status);
             return response;
         }
         default:
