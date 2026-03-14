@@ -1,5 +1,12 @@
-#include "../include/calc_core.hpp"
+#include "../include/runner.hpp"
 
-int main(int argc, char *const argv[]) {
-    return calc_core::run(argc, argv);
+int main(int argc, const char* argv[]) {
+    try {
+        Runner runner;
+        return runner.run(argc, argv);
+    }
+    catch (const std::exception &e) {
+        std::cerr << e.what() << std::endl;
+        return 1;
+    }
 }
