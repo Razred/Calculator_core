@@ -4,13 +4,16 @@
 #include "calculator.hpp"
 #include "printer.hpp"
 #include "postgres_db.hpp"
+#include "config.hpp"
 
 #include <iostream>
 
 class Runner {
 public:
-    Runner() : database(getConnStr()) {}
-    int run(int argc, const char* argv[], std::ostream &out = std::cout);
+    explicit Runner(const DbConfig& config)
+        : database(config.conn_str) {}
+
+    int run(const nlohmann::json &req, nlohmann::json &recv, std::ostream &out = std::cout);
 
 private:
     Parser parser;
@@ -19,14 +22,4 @@ private:
     Printer printer;
 
     postgres::PostgresDB database;
-
-    static std::string getConnStr() {
-        const char* conn = std::getenv("POSTGRES_CONN_STR");
-
-        if (!conn) {
-            throw std::runtime_error("POSTGRES_CONN_STR is not set");
-        }
-
-        return std::string(conn);
-    }
 };
