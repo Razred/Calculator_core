@@ -1,13 +1,22 @@
 #include "../include/runner.hpp"
 #include "../include/logger.hpp"
 
-int Runner::run(int argc, const char* argv[], std::ostream &out) {
-    checker.checkInputArgs(argc, argv);
+namespace {
+    nlohmann::json responseToJson(const Response& response) {
+        nlohmann::json json;
+        json["status"] = response.status;
+        if (response.status == 0) {
+            json["result"] = response.result_i64;
+        }
 
-    const std::string json_path = argv[1];
-    Logger::instance().info("Starting Runner with file: %s", json_path.c_str());
+        return json;
+    }
+}
 
-    Request request = parser.parse(json_path);
+int Runner::run(const nlohmann::json &req, nlohmann::json &recv, std::ostream &out) {
+    Logger::instance().info("Starting Runner with json file");
+
+    Request request = parser.parse(req);
     checker.checkRequest(request);
 
     std::optional<int64_t> second =
@@ -25,6 +34,8 @@ int Runner::run(int argc, const char* argv[], std::ostream &out) {
         std::optional<int64_t> res = (response.status == 0) ? std::optional<int64_t>(response.result_i64) : std::nullopt;
         database.saveOperation(request.first, second, request.op_str[0], res, response.status);
     }
+
+    recv = responseToJson(response);
 
     printer.print(request, response, out);
     Logger::instance().info("Calculation completed successfully");

@@ -1,13 +1,20 @@
-#include "../include/runner.hpp"
-#include "../include/connection.hpp"
+#include "../SupervisorRunner/supervisor_runner.hpp"
 
-int main(int argc, const char* argv[]) {
+int main() {
+    AppConfig config;
+    SupervisorRunner supervisor(config);
+
     try {
-        Runner runner;
-        return runner.run(argc, argv);
+        supervisor.run();
     }
     catch (const std::exception &e) {
-        std::cerr << e.what() << std::endl;
+        Logger::instance().error("Fatal error: %s", e.what());
         return 1;
     }
+    catch (...) {
+        Logger::instance().error("Unknown fatal error");
+        return 1;
+    }
+
+    return 0;
 }

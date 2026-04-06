@@ -1,0 +1,14 @@
+[Unit]
+Description=Calculator Service
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=calculator-service
+ExecStart=/usr/bin/calc
+Environment=POSTGRES_CONN_STR=host=localhost dbname=calc user=calc_user password=calc_pass
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
